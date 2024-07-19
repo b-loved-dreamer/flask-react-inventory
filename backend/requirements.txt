@@ -1,0 +1,22 @@
+# This file is used by pip to install required python packages
+# Usage: pip install -r requirements.txt
+
+# Flask Framework
+Flask
+flask-cors
+
+# Automated tests
+pytest
+pytest-cov
+
+# Code formatter
+black
+
+# Change detection agent
+py-mon
+
+# Data layer
+mysql.connector
+
+# Serializer
+jsonpickle

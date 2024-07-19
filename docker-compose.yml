@@ -1,0 +1,66 @@
+version: "3.7"
+networks:
+  # the internal network is a bridge network used by the
+  # api container and database
+  # We could also bypass this in favor of port fowarding to the host machine and
+  # communicating over tcp through the host, but this showcases a way to use docker's internal DNS to
+  # resolve networks
+  internal:
+    name: gatech_internal
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.17.0.0/16
+services:
+  # api holds all of our backend code
+  api:
+    build: ./backend
+    links:
+      - db
+    ports:
+      - "5000:5000"
+    networks:
+      - internal
+
+  # site is the container holding all of the front end code
+  site:
+    build: ./frontend
+    ports:
+      # expose the container's port 80 on the host's 3001
+      - "3001:80"
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+      - VITE_API=http://localhost:5000/
+    networks:
+      - internal
+
+  # db is a mysql instance
+  db:
+    image: mysql:8.0
+
+    command: >
+      --default-authentication-plugin=mysql_native_password --secure-file-priv=var/lib/mysql-files --local-infile=1 --sql-mode=""
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+    ports:
+      - "32000:3306"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+      - ./db/demo_data:/var/lib/mysql-files
+    networks:
+      - internal
+
+  phpmyadmin:
+    container_name: phpadmin_container
+    image: phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "5050:80"
+    networks:
+      - internal
