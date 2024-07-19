@@ -1,13 +1,3 @@
-# Team099
-
-Sumesh Arappanal Sekharan, sumeshsekhar@gatech.edu
-
-Gen Hosonuma, ghosonuma3@gatech.edu
-
-Franklin Samuel Nunez, fnunez31@gatech.edu
-
-Qiping Yu, qipingyu@gatech.edu
-
 # Quickstart
 
 You will need to install Docker. Run `make` to build the images and start our service. For those that do not have `make` installed, we can effectively do the same thing by running the following:
